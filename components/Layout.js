@@ -45,7 +45,7 @@ export default function Layout({ children, title, description }) {
 
           <nav className="main-nav desktop-nav">
             {NAV_LINKS.map(l => (
-              <Link key={l.href} href={l.href} className={`nav-link ${router.pathname === l.href || router.asPath === l.href ? 'active' : ''}`}>
+              <Link key={l.href} href={l.href} className={`nav-link ${router.asPath === l.href || (l.href !== '/' && router.asPath.startsWith(l.href)) ? 'active' : ''}`}>
                 {l.label}
               </Link>
             ))}
@@ -61,7 +61,7 @@ export default function Layout({ children, title, description }) {
         {menuOpen && (
           <div className="mobile-menu">
             {NAV_LINKS.map(l => (
-              <Link key={l.href} href={l.href} className={`mobile-link ${router.asPath === l.href ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+              <Link key={l.href} href={l.href} className={`mobile-link ${router.asPath === l.href || (l.href !== '/' && router.asPath.startsWith(l.href)) ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
                 <span className="ml-emoji">{l.emoji}</span>
                 {l.label}
               </Link>
@@ -125,7 +125,7 @@ export default function Layout({ children, title, description }) {
       {/* BOTTOM MOBILE NAV */}
       <nav className="bottom-nav">
         {NAV_LINKS.slice(0, 5).map(l => (
-          <Link key={l.href} href={l.href} className={`bottom-nav-item ${router.asPath === l.href ? 'active' : ''}`}>
+          <Link key={l.href} href={l.href} className={`bottom-nav-item ${router.asPath === l.href || (l.href !== '/' && router.asPath.startsWith(l.href)) ? 'active' : ''}`}>
             <span className="bn-emoji">{l.emoji}</span>
             <span className="bn-label">{l.label}</span>
           </Link>
