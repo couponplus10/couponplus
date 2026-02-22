@@ -162,7 +162,7 @@ export default function Home({ coupons }) {
             <div className="hero-badge">✂ <span>מתעדכן כל שעה</span> — קופונים אמיתיים בלבד</div>
             <h1>חסכו יותר<br />בכל <em>קנייה בסופר</em></h1>
             <p className="hero-sub">אלפי מבצעים וקופונים מכל הרשתות הגדולות — במקום אחד, מתעדכנים מדי יום.</p>
-            <a href="#coupons" className="hero-cta">🔥 לכל המבצעים החמים</a>
+            <a href="#coupons" className="hero-cta" onClick={e => { e.preventDefault(); document.getElementById('coupons')?.scrollIntoView({ behavior: 'smooth' }); }}>🔥 לכל המבצעים החמים</a>
             <div className="hero-stats">
               <div className="hstat"><strong>{coupons.length}+</strong><span>מבצעים פעילים</span></div>
               <div className="hstat"><strong>{chains.length}</strong><span>רשתות</span></div>
@@ -229,7 +229,7 @@ export default function Home({ coupons }) {
           <div className="section">
             <div className="section-head">
               <div className="section-title"><span className="dot"></span>🔥 חמים עכשיו</div>
-              <Link href="/?cat=hot" className="see-all">לכל המבצעים החמים →</Link>
+              <Link href="/deals" className="see-all">לכל המבצעים החמים →</Link>
             </div>
             <div className="scroll-container">
               <button className="scroll-arrow arr-right" onClick={() => scrollRow(hotRef, -1)}>‹</button>

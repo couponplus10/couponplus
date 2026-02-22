@@ -47,10 +47,9 @@ export default function CouponPage({ coupon, related }) {
         </div>
       </header>
 
-      {/* BREADCRUMB */}
       <div className="breadcrumb-wrap">
         <div className="breadcrumb">
-          <Link href="/">ראשי</Link>
+          <Link href="/" className="back-link">← חזרה לראשי</Link>
           <span>›</span>
           <span>{coupon.category}</span>
           <span>›</span>
@@ -179,7 +178,7 @@ export default function CouponPage({ coupon, related }) {
         .nav-link.active { background: var(--red); color: #fff; }
         .breadcrumb-wrap { background: var(--white); border-bottom: 1px solid var(--gray2); }
         .breadcrumb { max-width: 1280px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-        .breadcrumb a { color: var(--muted); } .breadcrumb a:hover { color: var(--red); }
+        .breadcrumb a, .back-link { color: var(--muted); } .back-link { font-weight: 700; color: var(--red) !important; } .back-link:hover { text-decoration: underline; }
         .breadcrumb .current { color: var(--navy); font-weight: 600; }
         .page-wrap { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
         .coupon-detail { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; margin-bottom: 40px; }
