@@ -27,6 +27,7 @@ export default function Contact() {
         </div>
       </header>
       <div className="page-wrap">
+        <Link href="/" className="back-btn">→ חזרה לראשי</Link>
         <div className="contact-box">
           <h1>צור קשר</h1>
           <p className="sub">שאלות, הצעות לשיתוף פעולה, או שגיאה באתר? נשמח לשמוע!</p>
@@ -71,6 +72,8 @@ export default function Contact() {
         .nav-link { padding: 8px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--muted); transition: all .18s; }
         .nav-link:hover { background: var(--gray); color: var(--navy); }
         .nav-link.active { background: var(--red); color: #fff; }
+        .back-btn{display:inline-flex;align-items:center;gap:6px;background:var(--red);color:#fff;padding:8px 20px;border-radius:50px;font-size:13px;font-weight:700;margin-bottom:24px;transition:all .2s}
+        .back-btn:hover{background:#C42810;transform:translateX(4px)}
         .page-wrap { max-width: 640px; margin: 60px auto; padding: 0 24px; }
         .contact-box { background: white; border-radius: 24px; padding: 48px; box-shadow: 0 4px 32px rgba(0,0,0,.08); }
         h1 { font-family: 'Rubik', sans-serif; font-size: 32px; font-weight: 900; color: var(--navy); margin-bottom: 8px; }

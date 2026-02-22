@@ -21,16 +21,16 @@ const BADGE_MAP = {
 };
 
 const CATEGORIES = [
-  { key: 'all', label: '🛒 הכל' },
-  { key: 'hot', label: '🔥 חמים עכשיו' },
-  { key: 'סופרמרקט', label: '🛍️ סופרמרקט' },
-  { key: 'פארם ובריאות', label: '💊 פארם ובריאות' },
-  { key: 'טיפוח וקוסמטיקה', label: '💄 טיפוח' },
-  { key: 'טואלטיקה', label: '🧴 טואלטיקה' },
-  { key: 'אלקטרוניקה', label: '📱 אלקטרוניקה' },
-  { key: 'בית ומטבח', label: '🏠 בית ומטבח' },
-  { key: 'אופנה', label: '👗 אופנה' },
-  { key: 'חיות מחמד', label: '🐾 חיות מחמד' },
+  { key: 'all', label: '🛒 הכל', href: null },
+  { key: 'hot', label: '🔥 חמים עכשיו', href: '/deals' },
+  { key: 'סופרמרקט', label: '🛍️ סופרמרקט', href: '/category/סופרמרקט' },
+  { key: 'פארם ובריאות', label: '💊 פארם ובריאות', href: '/category/פארם ובריאות' },
+  { key: 'טיפוח וקוסמטיקה', label: '💄 טיפוח', href: '/category/טיפוח וקוסמטיקה' },
+  { key: 'טואלטיקה', label: '🧴 טואלטיקה', href: '/category/טואלטיקה' },
+  { key: 'אלקטרוניקה', label: '📱 אלקטרוניקה', href: '/category/אלקטרוניקה' },
+  { key: 'בית ומטבח', label: '🏠 בית ומטבח', href: '/category/בית ומטבח' },
+  { key: 'אופנה', label: '👗 אופנה', href: '/category/אופנה' },
+  { key: 'חיות מחמד', label: '🐾 חיות מחמד', href: '/category/חיות מחמד' },
 ];
 
 function CouponCard({ coupon }) {
@@ -187,18 +187,20 @@ export default function Home({ coupons }) {
       <div className="chips-section" id="coupons">
         <div className="chips-row">
           {CATEGORIES.map(cat => (
-            <div
-              key={cat.key}
-              className={`chip ${activeCat === cat.key ? 'on' : ''}`}
-              onClick={() => setActiveCat(cat.key)}
-            >
-              {cat.label}
-              <span className="chip-num">
-                {cat.key === 'all' ? coupons.length
-                  : cat.key === 'hot' ? coupons.filter(c => c.badge === 'חם').length
-                  : coupons.filter(c => c.category === cat.key).length}
-              </span>
-            </div>
+            cat.href ? (
+              <Link key={cat.key} href={cat.href} className={`chip ${activeCat === cat.key ? 'on' : ''}`}>
+                {cat.label}
+                <span className="chip-num">
+                  {cat.key === 'hot' ? coupons.filter(c => c.badge === 'חם').length
+                    : coupons.filter(c => c.category === cat.key).length}
+                </span>
+              </Link>
+            ) : (
+              <div key={cat.key} className={`chip ${activeCat === cat.key ? 'on' : ''}`} onClick={() => setActiveCat(cat.key)}>
+                {cat.label}
+                <span className="chip-num">{coupons.length}</span>
+              </div>
+            )
           ))}
         </div>
       </div>
@@ -326,11 +328,11 @@ export default function Home({ coupons }) {
             </div>
             <div className="footer-col">
               <h5>קטגוריות</h5>
-              <a href="#">🛍️ סופרמרקט</a>
-              <a href="#">💊 פארם ובריאות</a>
-              <a href="#">💄 טיפוח</a>
-              <a href="#">📱 אלקטרוניקה</a>
-              <a href="#">🐾 חיות מחמד</a>
+              <Link href="/category/סופרמרקט">🛍️ סופרמרקט</Link>
+              <Link href="/category/פארם ובריאות">💊 פארם ובריאות</Link>
+              <Link href="/category/טיפוח וקוסמטיקה">💄 טיפוח</Link>
+              <Link href="/category/אלקטרוניקה">📱 אלקטרוניקה</Link>
+              <Link href="/category/חיות מחמד">🐾 חיות מחמד</Link>
             </div>
             <div className="footer-col">
               <h5>האתר</h5>

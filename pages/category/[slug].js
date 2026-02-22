@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState } from 'react';
-import { getCoupons } from '../lib/sheets';
+import { getCoupons } from '../../lib/sheets';
 
 const CHAIN_COLORS = {
   'רמי לוי':    { dot: '#F5A623', bg: 'linear-gradient(135deg,#fff8e1,#fff0b3)', emoji: '🛒' },
@@ -10,9 +10,21 @@ const CHAIN_COLORS = {
   'ויקטורי':    { dot: '#E53935', bg: 'linear-gradient(135deg,#ffebee,#ffcdd2)', emoji: '🥛' },
   'יינות ביתן': { dot: '#BA68C8', bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', emoji: '🍷' },
   'חצי חינם':   { dot: '#FF9800', bg: 'linear-gradient(135deg,#fff3e0,#ffe0b2)', emoji: '🏷️' },
+  'סופר-פארם':  { dot: '#9C27B0', bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', emoji: '💊' },
 };
 const DEFAULT_CHAIN = { dot: '#E8321A', bg: 'linear-gradient(135deg,#fff0e6,#ffddd0)', emoji: '🎫' };
 const BADGE_MAP = { 'חם': { cls: 'hot', label: '🔥 חם' }, 'חדש': { cls: 'new', label: '✨ חדש' }, 'מוגבל': { cls: 'lim', label: '⚡ מוגבל' } };
+
+const CATEGORY_META = {
+  'סופרמרקט':         { emoji: '🛍️', title: 'סופרמרקט', color: '#1A1A2E' },
+  'פארם ובריאות':     { emoji: '💊', title: 'פארם ובריאות', color: '#4A148C' },
+  'טיפוח וקוסמטיקה': { emoji: '💄', title: 'טיפוח וקוסמטיקה', color: '#880E4F' },
+  'טואלטיקה':         { emoji: '🧴', title: 'טואלטיקה', color: '#006064' },
+  'אלקטרוניקה':       { emoji: '📱', title: 'אלקטרוניקה', color: '#1565C0' },
+  'בית ומטבח':        { emoji: '🏠', title: 'בית ומטבח', color: '#4E342E' },
+  'אופנה':            { emoji: '👗', title: 'אופנה', color: '#AD1457' },
+  'חיות מחמד':        { emoji: '🐾', title: 'חיות מחמד', color: '#2E7D32' },
+};
 
 function CouponCard({ coupon }) {
   const [revealed, setRevealed] = useState(false);
@@ -51,53 +63,70 @@ function CouponCard({ coupon }) {
   );
 }
 
-export default function Deals({ coupons }) {
+export default function CategoryPage({ coupons, category }) {
   const [search, setSearch] = useState('');
+  const meta = CATEGORY_META[category] || { emoji: '🏷️', title: category, color: '#1A1A2E' };
   const filtered = coupons.filter(c => !search || c.name.includes(search) || c.chain.includes(search));
-  const chains = [...new Set(coupons.map(c => c.chain))];
 
   return (
     <>
-      <Head><title>כל המבצעים | קופון+</title></Head>
+      <Head><title>{meta.emoji} {meta.title} | קופון+</title></Head>
+
       <header>
         <div className="header-inner">
           <Link href="/" className="logo">קופון<span>+</span></Link>
           <div className="search-wrap">
-            <input type="text" placeholder="חפש מבצע..." value={search} onChange={e => setSearch(e.target.value)} />
+            <input type="text" placeholder={`חפש ב${meta.title}...`} value={search} onChange={e => setSearch(e.target.value)} />
             <span className="search-ico">🔍</span>
           </div>
           <nav className="main-nav">
             <Link href="/" className="nav-link">קופונים</Link>
-            <Link href="/deals" className="nav-link active">מבצעים</Link>
+            <Link href="/deals" className="nav-link">מבצעים</Link>
             <Link href="/pharm" className="nav-link">פארם</Link>
             <Link href="/contact" className="nav-link">צור קשר</Link>
           </nav>
         </div>
       </header>
 
-      <div className="page-hero">
+      <div className="page-hero" style={{ background: `linear-gradient(135deg, ${meta.color}, ${meta.color}cc)` }}>
         <Link href="/" className="back-btn">→ חזרה לראשי</Link>
-        <h1>🔥 כל המבצעים</h1>
+        <h1>{meta.emoji} {meta.title}</h1>
         <p>{filtered.length} מבצעים פעילים</p>
-        <div className="chain-chips">
-          {chains.map(c => <span key={c} className="cchip" onClick={() => setSearch(c)}>{c}</span>)}
-          {search && <span className="cchip cchip-clear" onClick={() => setSearch('')}>✕ נקה</span>}
-        </div>
       </div>
 
       <div className="section">
-        <div className="cards-grid">
-          {filtered.map((c, i) => (
-            <div key={c.id}>
-              <CouponCard coupon={c} />
-              {(i + 1) % 8 === 0 && <div className="ad-inline"><span className="ad-lbl">פרסומת</span>Google Ads — 300×250</div>}
-            </div>
-          ))}
-          {filtered.length === 0 && <p className="no-results">לא נמצאו מבצעים</p>}
-        </div>
+        {filtered.length === 0 ? (
+          <div className="empty">
+            <div className="empty-icon">{meta.emoji}</div>
+            <p>עדיין אין קופונים בקטגוריה זו</p>
+            <Link href="/" className="empty-back">← חזרה לכל הקופונים</Link>
+          </div>
+        ) : (
+          <div className="cards-grid">
+            {filtered.map((c, i) => (
+              <div key={c.id}>
+                <CouponCard coupon={c} />
+                {(i + 1) % 8 === 0 && (
+                  <div className="ad-inline"><span className="ad-lbl">פרסומת</span>Google Ads — 300×250</div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      <footer><div className="footer-inner"><div className="footer-bottom"><span>© 2025 קופון+</span><div className="footer-links"><Link href="/privacy">פרטיות</Link><Link href="/terms">תנאים</Link><Link href="/contact">צור קשר</Link></div></div></div></footer>
+      <footer>
+        <div className="footer-inner">
+          <div className="footer-bottom">
+            <span>© 2025 קופון+</span>
+            <div className="footer-links">
+              <Link href="/privacy">פרטיות</Link>
+              <Link href="/terms">תנאים</Link>
+              <Link href="/contact">צור קשר</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;500;700;900&display=swap');
@@ -105,7 +134,7 @@ export default function Deals({ coupons }) {
         body{font-family:'Heebo',sans-serif;background:#FFF8F3;color:#1A1A1A;direction:rtl}
         a{text-decoration:none;color:inherit}
         button{font-family:'Heebo',sans-serif;cursor:pointer;border:none;background:none}
-        :root{--red:#E8321A;--navy:#1A1A2E;--gray:#F5F0EC;--gray2:#E8E0D8;--muted:#7A6E68;--white:#FFFFFF}
+        :root{--red:#E8321A;--navy:#1A1A2E;--gray:#F5F0EC;--gray2:#E8E0D8;--muted:#7A6E68}
         header{background:#fff;border-bottom:1px solid var(--gray2);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.06)}
         .header-inner{max-width:1280px;margin:0 auto;padding:0 24px;height:68px;display:flex;align-items:center;gap:24px}
         .logo{font-family:'Rubik',sans-serif;font-size:26px;font-weight:900;color:var(--navy)}
@@ -118,18 +147,17 @@ export default function Deals({ coupons }) {
         .nav-link{padding:8px 16px;border-radius:10px;font-size:14px;font-weight:600;color:var(--muted);transition:all .18s;white-space:nowrap}
         .nav-link:hover{background:var(--gray);color:var(--navy)}
         .nav-link.active{background:var(--red);color:#fff}
-        .page-hero{background:linear-gradient(135deg,#1A1A2E,#2D1B4E);padding:48px 24px;text-align:center;color:#fff}
-        .back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);padding:8px 18px;border-radius:50px;font-size:13px;font-weight:700;margin-bottom:20px;transition:all .2s}
-        .back-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+        .page-hero{padding:48px 24px;text-align:center;color:#fff}
+        .back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;padding:8px 20px;border-radius:50px;font-size:13px;font-weight:700;margin-bottom:20px;transition:all .2s}
+        .back-btn:hover{background:rgba(255,255,255,.25)}
         .page-hero h1{font-family:'Rubik',sans-serif;font-size:40px;font-weight:900;margin-bottom:8px}
-        .page-hero p{color:rgba(255,255,255,.5);font-size:15px;margin-bottom:20px}
-        .chain-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
-        .cchip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);padding:6px 16px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s}
-        .cchip:hover{background:var(--red);border-color:var(--red);color:#fff}
-        .cchip-clear{background:rgba(232,50,26,.3);border-color:var(--red)}
+        .page-hero p{color:rgba(255,255,255,.6);font-size:15px}
         .section{padding:40px 24px;max-width:1280px;margin:0 auto}
         .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
-        .no-results{text-align:center;color:var(--muted);padding:40px;font-size:18px;grid-column:1/-1}
+        .empty{text-align:center;padding:80px 24px}
+        .empty-icon{font-size:64px;margin-bottom:16px}
+        .empty p{font-size:18px;color:var(--muted);margin-bottom:20px}
+        .empty-back{display:inline-block;background:var(--red);color:#fff;padding:12px 28px;border-radius:50px;font-weight:700;font-size:14px}
         .coupon-card{background:#fff;border-radius:20px;overflow:visible;border:2px solid var(--gray2);box-shadow:0 2px 12px rgba(0,0,0,.06);transition:transform .25s,box-shadow .25s,border-color .25s;cursor:pointer;display:flex;flex-direction:column}
         .coupon-card .card-img{border-radius:18px 18px 0 0;overflow:hidden}
         .coupon-card .card-footer{border-radius:0 0 18px 18px;overflow:hidden}
@@ -152,7 +180,7 @@ export default function Deals({ coupons }) {
         .btn-code{background:var(--gray);color:var(--navy);border-radius:10px;padding:10px 14px;font-size:12px;font-weight:800;font-family:'Rubik',sans-serif;letter-spacing:1px;transition:all .18s;white-space:nowrap}
         .btn-code.revealed{background:#FFF3E0;color:#E65100;letter-spacing:2px}
         .btn-code.copied{background:#E8F5E9;color:#2E7D32;letter-spacing:normal}
-        .ad-inline{background:#F0F4FF;border:1.5px dashed #C0CFEA;border-radius:12px;padding:16px;text-align:center;font-size:12px;color:#536070;position:relative;margin-top:0}
+        .ad-inline{background:#F0F4FF;border:1.5px dashed #C0CFEA;border-radius:12px;padding:16px;text-align:center;font-size:12px;color:#536070}
         .ad-lbl{display:block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#96AABF;margin-bottom:4px}
         footer{background:var(--navy);padding:24px;margin-top:40px}
         .footer-inner{max-width:1280px;margin:0 auto}
@@ -165,7 +193,24 @@ export default function Deals({ coupons }) {
   );
 }
 
-export async function getStaticProps() {
-  const coupons = await getCoupons();
-  return { props: { coupons }, revalidate: 3600 };
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { slug: 'סופרמרקט' } },
+      { params: { slug: 'פארם ובריאות' } },
+      { params: { slug: 'טיפוח וקוסמטיקה' } },
+      { params: { slug: 'טואלטיקה' } },
+      { params: { slug: 'אלקטרוניקה' } },
+      { params: { slug: 'בית ומטבח' } },
+      { params: { slug: 'אופנה' } },
+      { params: { slug: 'חיות מחמד' } },
+    ],
+    fallback: 'blocking',
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const all = await getCoupons();
+  const coupons = all.filter(c => c.category === params.slug);
+  return { props: { coupons, category: params.slug }, revalidate: 3600 };
 }

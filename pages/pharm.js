@@ -71,7 +71,7 @@ export default function Pharm({ coupons }) {
       </header>
 
       <div className="page-hero">
-        <Link href="/" className="back-btn">← חזרה לראשי</Link>
+        <Link href="/" className="back-btn">→ חזרה לראשי</Link>
         <h1>💊 פארם וקוסמטיקה</h1>
         <p>{filtered.length} מבצעים בפארם, טיפוח וקוסמטיקה</p>
       </div>
