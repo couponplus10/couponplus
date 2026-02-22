@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { getCoupons } from '../lib/sheets';
 
 const CHAIN_COLORS = {
@@ -39,10 +39,11 @@ function CouponCard({ coupon }) {
   const chain = CHAIN_COLORS[coupon.chain] || DEFAULT_CHAIN;
   const badge = BADGE_MAP[coupon.badge];
   const masked = coupon.code ? coupon.code.slice(0, 3) + '•••' : '';
+  const expired = coupon.expired;
 
   function handleCode(e) {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
+    if (expired) return;
     if (!revealed) { setRevealed(true); return; }
     navigator.clipboard.writeText(coupon.code).catch(() => {});
     setCopied(true);
@@ -51,30 +52,23 @@ function CouponCard({ coupon }) {
 
   return (
     <Link href={`/coupon/${coupon.id}`} style={{ textDecoration: 'none' }}>
-      <div className="coupon-card">
+      <div className={`coupon-card${expired ? ' expired' : ''}`}>
         <div className="card-img">
-          {coupon.image
-            ? <img src={coupon.image} alt={coupon.name} className="card-img-photo" />
-            : <div className="card-img-bg" style={{ background: chain.bg }}>{chain.emoji}</div>
+          {coupon.image ? <img src={coupon.image} alt={coupon.name} className="card-img-photo" /> : <div className="card-img-bg" style={{ background: chain.bg }}>{chain.emoji}</div>}
+          <div className="card-badge-chain"><div className="chain-dot" style={{ background: chain.dot }}></div>{coupon.chain}</div>
+          {expired
+            ? <div className="card-badge-status exp">⛔ פג תוקף</div>
+            : badge && <div className={`card-badge-status ${badge.cls}`}>{badge.label}</div>
           }
-          <div className="card-badge-chain">
-            <div className="chain-dot" style={{ background: chain.dot }}></div>
-            {coupon.chain}
-          </div>
-          {badge && <div className={`card-badge-status ${badge.cls}`}>{badge.label}</div>}
           {coupon.discount && <div className="card-discount-badge">{coupon.discount}</div>}
         </div>
         <div className="card-body">
           <div className="card-title">{coupon.name}</div>
-          {coupon.expiry && <div className="card-meta"><span>📅 עד {coupon.expiry}</span></div>}
+          {coupon.expiry && <div className="card-meta">📅 עד {coupon.expiry}</div>}
         </div>
         <div className="card-footer">
-          <button className="btn-details">לפרטים ולקוד →</button>
-          {coupon.code && (
-            <button className={`btn-code ${revealed ? 'revealed' : ''} ${copied ? 'copied' : ''}`} onClick={handleCode}>
-              {copied ? '✅ הועתק!' : revealed ? coupon.code : masked}
-            </button>
-          )}
+          <button className="btn-details" style={expired ? {background:'#aaa'} : {}}>לפרטים ולקוד →</button>
+          {coupon.code && !expired && <button className={`btn-code ${revealed ? 'revealed' : ''} ${copied ? 'copied' : ''}`} onClick={handleCode}>{copied ? '✅ הועתק!' : revealed ? coupon.code : masked}</button>}
         </div>
       </div>
     </Link>
@@ -237,11 +231,12 @@ export default function Home({ coupons }) {
               <button className="scroll-arrow arr-right" onClick={() => scrollRow(hotRef, -1)}>‹</button>
               <div className="scroll-row" ref={hotRef}>
                 {(hotCoupons.length ? hotCoupons : coupons.slice(0, 6)).map((c, i) => (
-                  <>
-                    <CouponCard key={c.id} coupon={c} />
-                    {i === 3 && <AdCard key="ad-hot" />}
-                  </>
+                  <React.Fragment key={c.id}>
+                    <CouponCard coupon={c} />
+                    {i === 2 && <AdCard key="ad-hot" />}
+                  </React.Fragment>
                 ))}
+                {(hotCoupons.length ? hotCoupons : coupons.slice(0, 6)).length <= 2 && <AdCard key="ad-hot-fallback" />}
               </div>
               <button className="scroll-arrow arr-left" onClick={() => scrollRow(hotRef, 1)}>›</button>
             </div>
@@ -493,6 +488,12 @@ export default function Home({ coupons }) {
         .footer-links a { color: rgba(255,255,255,.6); transition: color .15s; }
         .footer-links a:hover { color: #fff; }
 
+
+        .coupon-card.expired { opacity: 0.55; filter: grayscale(0.7); }
+        .coupon-card.expired:hover { transform: none; box-shadow: 0 2px 12px rgba(0,0,0,.06); border-color: var(--gray2); cursor: default; }
+        .coupon-card.expired .card-img-bg { filter: grayscale(1); }
+        .card-badge-status.exp { background: #E0E0E0; color: #757575; }
+        .expired-date { color: #E53935 !important; }
         @media(max-width:768px){
           .header-inner{padding:0 16px;gap:12px;height:60px}
           .main-nav{display:none}
@@ -533,6 +534,10 @@ export default function Home({ coupons }) {
           .cards-grid{grid-template-columns:1fr}
           .hc-grid{grid-template-columns:repeat(2,1fr)}
         }
+
+        .coupon-card.expired{opacity:.55;filter:grayscale(1)}
+        .coupon-card.expired:hover{transform:none;box-shadow:0 2px 12px rgba(0,0,0,.06);border-color:var(--gray2);cursor:default}
+        .exp{background:#e0e0e0!important;color:#757575!important}
       `}</style>
     </>
   );
