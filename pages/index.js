@@ -96,8 +96,8 @@ function AdCard() {
 
 export default function Home({ coupons }) {
   const [search, setSearch] = useState('');
+  const [showGrid, setShowGrid] = useState(false);
   const [activeCat, setActiveCat] = useState('all');
-  const [userPickedAll, setUserPickedAll] = useState(false);
   const hotRef = useRef(null);
   const pharmRef = useRef(null);
 
@@ -143,7 +143,7 @@ export default function Home({ coupons }) {
               type="text"
               placeholder="חפש מבצע, מוצר, או רשת..."
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={e => { setSearch(e.target.value); setShowGrid(true); }}
             />
             <span className="search-ico">🔍</span>
           </div>
@@ -173,7 +173,7 @@ export default function Home({ coupons }) {
             <div className="hc-title">בחר רשת</div>
             <div className="hc-grid">
               {chains.slice(0, 6).map((chain, i) => (
-                <div key={chain} className={`hc-btn hc-${i}`} onClick={() => { setActiveCat(chain); setUserPickedAll(false); }}>
+                <div key={chain} className={`hc-btn hc-${i}`} onClick={() => { setActiveCat(chain); setShowGrid(true); }}>
                   <span className="hc-btn-name">{chain}</span>
                   <span className="hc-btn-count">{coupons.filter(c => c.chain === chain).length} מבצעים</span>
                 </div>
@@ -190,7 +190,7 @@ export default function Home({ coupons }) {
             <div
               key={cat.key}
               className={`chip ${activeCat === cat.key ? 'on' : ''}`}
-              onClick={() => { setActiveCat(cat.key); setUserPickedAll(cat.key === 'all'); }}
+              onClick={() => { setActiveCat(cat.key); setShowGrid(true); }}
             >
               {cat.label}
               <span className="chip-num">
@@ -203,12 +203,12 @@ export default function Home({ coupons }) {
         </div>
       </div>
 
-      {/* SEARCH RESULTS / ALL */}
-      {(search || activeCat !== 'all' || userPickedAll) && (
+      {/* GRID */}
+      {showGrid && (
         <div className="section">
           <div className="section-head">
             <div className="section-title"><span className="dot"></span>
-              {search ? `תוצאות עבור "${search}"` : userPickedAll ? "🛒 כל הקופונים" : CATEGORIES.find(c => c.key === activeCat)?.label}
+              {search ? `תוצאות עבור "${search}"` : activeCat === "all" ? "🛒 כל הקופונים" : CATEGORIES.find(c => c.key === activeCat)?.label}
             </div>
           </div>
           <div className="cards-grid">
@@ -224,7 +224,7 @@ export default function Home({ coupons }) {
       )}
 
       {/* HOT NOW */}
-      {!search && activeCat === 'all' && !userPickedAll && (
+      {!showGrid && (
         <>
           <div className="section">
             <div className="section-head">
@@ -267,7 +267,7 @@ export default function Home({ coupons }) {
                 const ch = CHAIN_COLORS[chain] || DEFAULT_CHAIN;
                 const chainCoupons = coupons.filter(c => c.chain === chain);
                 return (
-                  <div key={chain} className="promo-card" onClick={() => { setActiveCat(chain); setUserPickedAll(false); }}>
+                  <div key={chain} className="promo-card" onClick={() => { setActiveCat(chain); setShowGrid(true); }}>
                     <div className="promo-card-bg" style={{ background: ch.bg }}>{ch.emoji}</div>
                     <div className="promo-card-overlay"></div>
                     <div className="promo-card-content">
