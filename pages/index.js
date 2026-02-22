@@ -4,33 +4,33 @@ import { useState, useRef } from 'react';
 import { getCoupons } from '../lib/sheets';
 
 const CHAIN_COLORS = {
-  '\u05e8\u05de\u05d9 \u05dc\u05d5\u05d9':    { dot: '#F5A623', bg: 'linear-gradient(135deg,#fff8e1,#fff0b3)', emoji: '\ud83d\uded2' },
-  '\u05e9\u05d5\u05e4\u05e8\u05e1\u05dc':     { dot: '#2DB86A', bg: 'linear-gradient(135deg,#e8f5e9,#c8e6c9)', emoji: '\ud83e\uddf4' },
-  '\u05de\u05d2\u05d4':        { dot: '#2196F3', bg: 'linear-gradient(135deg,#e3f2fd,#bbdefb)', emoji: '\ud83e\udd69' },
-  '\u05d5\u05d9\u05e7\u05d8\u05d5\u05e8\u05d9':    { dot: '#E53935', bg: 'linear-gradient(135deg,#ffebee,#ffcdd2)', emoji: '\ud83e\udd5b' },
-  '\u05d9\u05d9\u05e0\u05d5\u05ea \u05d1\u05d9\u05ea\u05df': { dot: '#BA68C8', bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', emoji: '\ud83c\udf77' },
-  '\u05d7\u05e6\u05d9 \u05d7\u05d9\u05e0\u05dd':   { dot: '#FF9800', bg: 'linear-gradient(135deg,#fff3e0,#ffe0b2)', emoji: '\ud83c\udff7\ufe0f' },
-  '\u05e1\u05d5\u05e4\u05e8-\u05e4\u05d0\u05e8\u05dd':  { dot: '#9C27B0', bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', emoji: '\ud83d\udc8a' },
+  'רמי לוי':    { dot: '#F5A623', bg: 'linear-gradient(135deg,#fff8e1,#fff0b3)', emoji: '🛒' },
+  'שופרסל':     { dot: '#2DB86A', bg: 'linear-gradient(135deg,#e8f5e9,#c8e6c9)', emoji: '🧴' },
+  'מגה':        { dot: '#2196F3', bg: 'linear-gradient(135deg,#e3f2fd,#bbdefb)', emoji: '🥩' },
+  'ויקטורי':    { dot: '#E53935', bg: 'linear-gradient(135deg,#ffebee,#ffcdd2)', emoji: '🥛' },
+  'יינות ביתן': { dot: '#BA68C8', bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', emoji: '🍷' },
+  'חצי חינם':   { dot: '#FF9800', bg: 'linear-gradient(135deg,#fff3e0,#ffe0b2)', emoji: '🏷️' },
+  'סופר-פארם':  { dot: '#9C27B0', bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', emoji: '💊' },
 };
-const DEFAULT_CHAIN = { dot: '#E8321A', bg: 'linear-gradient(135deg,#fff0e6,#ffddd0)', emoji: '\ud83c\udfab' };
+const DEFAULT_CHAIN = { dot: '#E8321A', bg: 'linear-gradient(135deg,#fff0e6,#ffddd0)', emoji: '🎫' };
 
 const BADGE_MAP = {
-  '\u05d7\u05dd':      { cls: 'hot', label: '\ud83d\udd25 \u05d7\u05dd' },
-  '\u05d7\u05d3\u05e9':     { cls: 'new', label: '\u2728 \u05d7\u05d3\u05e9' },
-  '\u05de\u05d5\u05d2\u05d1\u05dc':   { cls: 'lim', label: '\u26a1 \u05de\u05d5\u05d2\u05d1\u05dc' },
+  'חם':      { cls: 'hot', label: '🔥 חם' },
+  'חדש':     { cls: 'new', label: '✨ חדש' },
+  'מוגבל':   { cls: 'lim', label: '⚡ מוגבל' },
 };
 
 const CATEGORIES = [
-  { key: 'all', label: '\ud83d\uded2 \u05d4\u05db\u05dc' },
-  { key: 'hot', label: '\ud83d\udd25 \u05d7\u05de\u05d9\u05dd \u05e2\u05db\u05e9\u05d9\u05d5' },
-  { key: '\u05e1\u05d5\u05e4\u05e8\u05de\u05e8\u05e7\u05d8', label: '\ud83d\udecd\ufe0f \u05e1\u05d5\u05e4\u05e8\u05de\u05e8\u05e7\u05d8' },
-  { key: '\u05e4\u05d0\u05e8\u05dd \u05d5\u05d1\u05e8\u05d9\u05d0\u05d5\u05ea', label: '\ud83d\udc8a \u05e4\u05d0\u05e8\u05dd \u05d5\u05d1\u05e8\u05d9\u05d0\u05d5\u05ea' },
-  { key: '\u05d8\u05d9\u05e4\u05d5\u05d7 \u05d5\u05e7\u05d5\u05e1\u05de\u05d8\u05d9\u05e7\u05d4', label: '\ud83d\udc84 \u05d8\u05d9\u05e4\u05d5\u05d7' },
-  { key: '\u05d8\u05d5\u05d0\u05dc\u05d8\u05d9\u05e7\u05d4', label: '\ud83e\uddf4 \u05d8\u05d5\u05d0\u05dc\u05d8\u05d9\u05e7\u05d4' },
-  { key: '\u05d0\u05dc\u05e7\u05d8\u05e8\u05d5\u05e0\u05d9\u05e7\u05d4', label: '\ud83d\udcf1 \u05d0\u05dc\u05e7\u05d8\u05e8\u05d5\u05e0\u05d9\u05e7\u05d4' },
-  { key: '\u05d1\u05d9\u05ea \u05d5\u05de\u05d8\u05d1\u05d7', label: '\ud83c\udfe0 \u05d1\u05d9\u05ea \u05d5\u05de\u05d8\u05d1\u05d7' },
-  { key: '\u05d0\u05d5\u05e4\u05e0\u05d4', label: '\ud83d\udc57 \u05d0\u05d5\u05e4\u05e0\u05d4' },
-  { key: '\u05d7\u05d9\u05d5\u05ea \u05de\u05d7\u05de\u05d3', label: '\ud83d\udc3e \u05d7\u05d9\u05d5\u05ea \u05de\u05d7\u05de\u05d3' },
+  { key: 'all', label: '🛒 הכל' },
+  { key: 'hot', label: '🔥 חמים עכשיו' },
+  { key: 'סופרמרקט', label: '🛍️ סופרמרקט' },
+  { key: 'פארם ובריאות', label: '💊 פארם ובריאות' },
+  { key: 'טיפוח וקוסמטיקה', label: '💄 טיפוח' },
+  { key: 'טואלטיקה', label: '🧴 טואלטיקה' },
+  { key: 'אלקטרוניקה', label: '📱 אלקטרוניקה' },
+  { key: 'בית ומטבח', label: '🏠 בית ומטבח' },
+  { key: 'אופנה', label: '👗 אופנה' },
+  { key: 'חיות מחמד', label: '🐾 חיות מחמד' },
 ];
 
 function CouponCard({ coupon }) {
@@ -38,7 +38,7 @@ function CouponCard({ coupon }) {
   const [copied, setCopied] = useState(false);
   const chain = CHAIN_COLORS[coupon.chain] || DEFAULT_CHAIN;
   const badge = BADGE_MAP[coupon.badge];
-  const masked = coupon.code ? coupon.code.slice(0, 3) + '\u2022\u2022\u2022' : '';
+  const masked = coupon.code ? coupon.code.slice(0, 3) + '•••' : '';
 
   function handleCode(e) {
     e.preventDefault();
@@ -66,13 +66,13 @@ function CouponCard({ coupon }) {
         </div>
         <div className="card-body">
           <div className="card-title">{coupon.name}</div>
-          {coupon.expiry && <div className="card-meta"><span>\ud83d\udcc5 \u05e2\u05d3 {coupon.expiry}</span></div>}
+          {coupon.expiry && <div className="card-meta"><span>📅 עד {coupon.expiry}</span></div>}
         </div>
         <div className="card-footer">
-          <button className="btn-details">\u05dc\u05e4\u05e8\u05d8\u05d9\u05dd \u05d5\u05dc\u05e7\u05d5\u05d3 \u2192</button>
+          <button className="btn-details">לפרטים ולקוד →</button>
           {coupon.code && (
             <button className={`btn-code ${revealed ? 'revealed' : ''} ${copied ? 'copied' : ''}`} onClick={handleCode}>
-              {copied ? '\u2705 \u05d4\u05d5\u05e2\u05ea\u05e7!' : revealed ? coupon.code : masked}
+              {copied ? '✅ הועתק!' : revealed ? coupon.code : masked}
             </button>
           )}
         </div>
@@ -84,11 +84,11 @@ function CouponCard({ coupon }) {
 function AdCard() {
   return (
     <div className="coupon-card ad-card">
-      <div className="ad-card-label">\u05e4\u05e8\u05e1\u05d5\u05de\u05ea</div>
+      <div className="ad-card-label">פרסומת</div>
       <div className="ad-card-inner">
-        <div className="ad-card-icon">\ud83c\udfaf</div>
+        <div className="ad-card-icon">🎯</div>
         <div className="ad-card-text">Google Ads</div>
-        <div className="ad-card-sub">300\u00d7250</div>
+        <div className="ad-card-sub">300×250</div>
       </div>
     </div>
   );
@@ -103,13 +103,13 @@ export default function Home({ coupons }) {
   const filtered = coupons.filter(c => {
     const matchSearch = !search || c.name.includes(search) || c.chain.includes(search) || c.code.includes(search);
     const matchCat = activeCat === 'all' ? true
-      : activeCat === 'hot' ? c.badge === '\u05d7\u05dd'
+      : activeCat === 'hot' ? c.badge === 'חם'
       : c.category === activeCat;
     return matchSearch && matchCat;
   });
 
-  const hotCoupons = coupons.filter(c => c.badge === '\u05d7\u05dd').slice(0, 8);
-  const pharmCoupons = coupons.filter(c => c.category === '\u05e4\u05d0\u05e8\u05dd \u05d5\u05d1\u05e8\u05d9\u05d0\u05d5\u05ea' || c.category === '\u05d8\u05d9\u05e4\u05d5\u05d7 \u05d5\u05e7\u05d5\u05e1\u05de\u05d8\u05d9\u05e7\u05d4').slice(0, 8);
+  const hotCoupons = coupons.filter(c => c.badge === 'חם').slice(0, 8);
+  const pharmCoupons = coupons.filter(c => c.category === 'פארם ובריאות' || c.category === 'טיפוח וקוסמטיקה').slice(0, 8);
   const chains = [...new Set(coupons.map(c => c.chain))];
 
   function scrollRow(ref, dir) {
@@ -119,38 +119,38 @@ export default function Home({ coupons }) {
   return (
     <>
       <Head>
-        <title>\u05e7\u05d5\u05e4\u05d5\u05df+ | \u05db\u05dc \u05d4\u05e7\u05d5\u05e4\u05d5\u05e0\u05d9\u05dd \u05d5\u05d4\u05de\u05d1\u05e6\u05e2\u05d9\u05dd \u05d1\u05de\u05e7\u05d5\u05dd \u05d0\u05d7\u05d3</title>
-        <meta name="description" content="\u05d0\u05dc\u05e4\u05d9 \u05e7\u05d5\u05e4\u05d5\u05e0\u05d9\u05dd \u05d5\u05de\u05d1\u05e6\u05e2\u05d9\u05dd \u05de\u05db\u05dc \u05d4\u05e8\u05e9\u05ea\u05d5\u05ea \u05d4\u05d2\u05d3\u05d5\u05dc\u05d5\u05ea" />
+        <title>קופון+ | כל הקופונים והמבצעים במקום אחד</title>
+        <meta name="description" content="אלפי קופונים ומבצעים מכל הרשתות הגדולות" />
         <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet" />
       </Head>
 
       {/* TOP BAR */}
       <div className="topbar">
-        <span>\ud83d\udd25 \u05de\u05d1\u05e6\u05e2\u05d9\u05dd \u05d7\u05de\u05d9\u05dd</span>
+        <span>🔥 מבצעים חמים</span>
         <span className="sep">|</span>
-        <span>\u05e0\u05d5\u05e1\u05e4\u05d5 <b>{coupons.length} \u05e7\u05d5\u05e4\u05d5\u05e0\u05d9\u05dd</b> \u05e4\u05e2\u05d9\u05dc\u05d9\u05dd</span>
+        <span>נוספו <b>{coupons.length} קופונים</b> פעילים</span>
         <span className="sep">|</span>
-        <span>\u05de\u05ea\u05e2\u05d3\u05db\u05df \u05de\u05d3\u05d9 \u05d9\u05d5\u05dd</span>
+        <span>מתעדכן מדי יום</span>
       </div>
 
       {/* HEADER */}
       <header>
         <div className="header-inner">
-          <Link href="/" className="logo">\u05e7\u05d5\u05e4\u05d5\u05df<span>+</span></Link>
+          <Link href="/" className="logo">קופון<span>+</span></Link>
           <div className="search-wrap">
             <input
               type="text"
-              placeholder="\u05d7\u05e4\u05e9 \u05de\u05d1\u05e6\u05e2, \u05de\u05d5\u05e6\u05e8, \u05d0\u05d5 \u05e8\u05e9\u05ea..."
+              placeholder="חפש מבצע, מוצר, או רשת..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
-            <span className="search-ico">\ud83d\udd0d</span>
+            <span className="search-ico">🔍</span>
           </div>
           <nav className="main-nav">
-            <Link href="/" className="nav-link active">\u05e7\u05d5\u05e4\u05d5\u05e0\u05d9\u05dd</Link>
-            <Link href="/deals" className="nav-link">\u05de\u05d1\u05e6\u05e2\u05d9\u05dd</Link>
-            <Link href="/pharm" className="nav-link">\u05e4\u05d0\u05e8\u05dd</Link>
-            <Link href="/contact" className="nav-link">\u05e6\u05d5\u05e8 \u05e7\u05e9\u05e8</Link>
+            <Link href="/" className="nav-link active">קופונים</Link>
+            <Link href="/deals" className="nav-link">מבצעים</Link>
+            <Link href="/pharm" className="nav-link">פארם</Link>
+            <Link href="/contact" className="nav-link">צור קשר</Link>
           </nav>
         </div>
       </header>
@@ -159,23 +159,23 @@ export default function Home({ coupons }) {
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-copy">
-            <div className="hero-badge">\u2702 <span>\u05de\u05ea\u05e2\u05d3\u05db\u05df \u05db\u05dc \u05e9\u05e2\u05d4</span> \u2014 \u05e7\u05d5\u05e4\u05d5\u05e0\u05d9\u05dd \u05d0\u05de\u05d9\u05ea\u05d9\u05d9\u05dd \u05d1\u05dc\u05d1\u05d3</div>
-            <h1>\u05d7\u05e1\u05db\u05d5 \u05d9\u05d5\u05ea\u05e8<br />\u05d1\u05db\u05dc <em>\u05e7\u05e0\u05d9\u05d9\u05d4 \u05d1\u05e1\u05d5\u05e4\u05e8</em></h1>
-            <p className="hero-sub">\u05d0\u05dc\u05e4\u05d9 \u05de\u05d1\u05e6\u05e2\u05d9\u05dd \u05d5\u05e7\u05d5\u05e4\u05d5\u05e0\u05d9\u05dd \u05de\u05db\u05dc \u05d4\u05e8\u05e9\u05ea\u05d5\u05ea \u05d4\u05d2\u05d3\u05d5\u05dc\u05d5\u05ea \u2014 \u05d1\u05de\u05e7\u05d5\u05dd \u05d0\u05d7\u05d3, \u05de\u05ea\u05e2\u05d3\u05db\u05e0\u05d9\u05dd \u05de\u05d3\u05d9 \u05d9\u05d5\u05dd.</p>
-            <a href="#coupons" className="hero-cta">\ud83d\udd25 \u05dc\u05db\u05dc \u05d4\u05de\u05d1\u05e6\u05e2\u05d9\u05dd \u05d4\u05d7\u05de\u05d9\u05dd</a>
+            <div className="hero-badge">✂ <span>מתעדכן כל שעה</span> — קופונים אמיתיים בלבד</div>
+            <h1>חסכו יותר<br />בכל <em>קנייה בסופר</em></h1>
+            <p className="hero-sub">אלפי מבצעים וקופונים מכל הרשתות הגדולות — במקום אחד, מתעדכנים מדי יום.</p>
+            <a href="#coupons" className="hero-cta">🔥 לכל המבצעים החמים</a>
             <div className="hero-stats">
-              <div className="hstat"><strong>{coupons.length}+</strong><span>\u05de\u05d1\u05e6\u05e2\u05d9\u05dd \u05e4\u05e2\u05d9\u05dc\u05d9\u05dd</span></div>
-              <div className="hstat"><strong>{chains.length}</strong><span>\u05e8\u05e9\u05ea\u05d5\u05ea</span></div>
-              <div className="hstat"><strong>{hotCoupons.length}</strong><span>\u05d7\u05de\u05d9\u05dd \u05e2\u05db\u05e9\u05d9\u05d5</span></div>
+              <div className="hstat"><strong>{coupons.length}+</strong><span>מבצעים פעילים</span></div>
+              <div className="hstat"><strong>{chains.length}</strong><span>רשתות</span></div>
+              <div className="hstat"><strong>{hotCoupons.length}</strong><span>חמים עכשיו</span></div>
             </div>
           </div>
           <div className="hero-chains">
-            <div className="hc-title">\u05d1\u05d7\u05e8 \u05e8\u05e9\u05ea</div>
+            <div className="hc-title">בחר רשת</div>
             <div className="hc-grid">
               {chains.slice(0, 6).map((chain, i) => (
                 <div key={chain} className={`hc-btn hc-${i}`} onClick={() => setActiveCat(chain)}>
                   <span className="hc-btn-name">{chain}</span>
-                  <span className="hc-btn-count">{coupons.filter(c => c.chain === chain).length} \u05de\u05d1\u05e6\u05e2\u05d9\u05dd</span>
+                  <span className="hc-btn-count">{coupons.filter(c => c.chain === chain).length} מבצעים</span>
                 </div>
               ))}
             </div>
@@ -195,7 +195,7 @@ export default function Home({ coupons }) {
               {cat.label}
               <span className="chip-num">
                 {cat.key === 'all' ? coupons.length
-                  : cat.key === 'hot' ? coupons.filter(c => c.badge === '\u05d7\u05dd').length
+                  : cat.key === 'hot' ? coupons.filter(c => c.badge === 'חם').length
                   : coupons.filter(c => c.category === cat.key).length}
               </span>
             </div>
@@ -208,7 +208,7 @@ export default function Home({ coupons }) {
         <div className="section">
           <div className="section-head">
             <div className="section-title"><span className="dot"></span>
-              {search ? `\u05ea\u05d5\u05e6\u05d0\u05d5\u05ea \u05e2\u05d1\u05d5\u05e8 "${search}"` : CATEGORIES.find(c => c.key === activeCat)?.label}
+              {search ? `תוצאות עבור "${search}"` : CATEGORIES.find(c => c.key === activeCat)?.label}
             </div>
           </div>
           <div className="cards-grid">
@@ -218,7 +218,7 @@ export default function Home({ coupons }) {
                 {(i + 1) % 4 === 0 && <AdCard key={`ad-${i}`} />}
               </>
             ))}
-            {filtered.length === 0 && <p className="no-results">\u05dc\u05d0 \u05e0\u05de\u05e6\u05d0\u05d5 \u05e7\u05d5\u05e4\u05d5\u05e0\u05d9\u05dd</p>}
+            {filtered.length === 0 && <p className="no-results">לא נמצאו קופונים</p>}
           </div>
         </div>
       )}
@@ -228,11 +228,11 @@ export default function Home({ coupons }) {
         <>
           <div className="section">
             <div className="section-head">
-              <div className="section-title"><span className="dot"></span>\ud83d\udd25 \u05d7\u05de\u05d9\u05dd \u05e2\u05db\u05e9\u05d9\u05d5</div>
-              <Link href="/?cat=hot" className="see-all">\u05dc\u05db\u05dc \u05d4\u05de\u05d1\u05e6\u05e2\u05d9\u05dd \u05d4\u05d7\u05de\u05d9\u05dd \u2192</Link>
+              <div className="section-title"><span className="dot"></span>🔥 חמים עכשיו</div>
+              <Link href="/?cat=hot" className="see-all">לכל המבצעים החמים →</Link>
             </div>
             <div className="scroll-container">
-              <button className="scroll-arrow arr-right" onClick={() => scrollRow(hotRef, -1)}>\u2039</button>
+              <button className="scroll-arrow arr-right" onClick={() => scrollRow(hotRef, -1)}>‹</button>
               <div className="scroll-row" ref={hotRef}>
                 {(hotCoupons.length ? hotCoupons : coupons.slice(0, 6)).map((c, i) => (
                   <>
@@ -241,17 +241,17 @@ export default function Home({ coupons }) {
                   </>
                 ))}
               </div>
-              <button className="scroll-arrow arr-left" onClick={() => scrollRow(hotRef, 1)}>\u203a</button>
+              <button className="scroll-arrow arr-left" onClick={() => scrollRow(hotRef, 1)}>›</button>
             </div>
           </div>
 
           {/* AD STRIP */}
           <div className="ad-strip-wrap">
             <div className="ad-strip">
-              <div className="ad-label">\u05e4\u05e8\u05e1\u05d5\u05de\u05ea</div>
+              <div className="ad-label">פרסומת</div>
               <div className="ad-content">
-                <div className="ad-icon">\ud83c\udfaf</div>
-                <div className="ad-text"><b>Google Ads \u2014 728\u00d790</b> | Leaderboard Banner</div>
+                <div className="ad-icon">🎯</div>
+                <div className="ad-text"><b>Google Ads — 728×90</b> | Leaderboard Banner</div>
               </div>
             </div>
           </div>
@@ -259,8 +259,8 @@ export default function Home({ coupons }) {
           {/* PROMO GRID */}
           <div className="section">
             <div className="section-head">
-              <div className="section-title"><span className="dot"></span>\ud83c\udfea \u05de\u05d1\u05e6\u05e2\u05d9 \u05e9\u05d1\u05d5\u05e2 \u05dc\u05e4\u05d9 \u05e8\u05e9\u05ea</div>
-              <Link href="/deals" className="see-all">\u05db\u05dc \u05d4\u05e8\u05e9\u05ea\u05d5\u05ea \u2192</Link>
+              <div className="section-title"><span className="dot"></span>🏪 מבצעי שבוע לפי רשת</div>
+              <Link href="/deals" className="see-all">כל הרשתות →</Link>
             </div>
             <div className="promo-grid">
               {chains.slice(0, 3).map((chain, i) => {
@@ -272,8 +272,8 @@ export default function Home({ coupons }) {
                     <div className="promo-card-overlay"></div>
                     <div className="promo-card-content">
                       <div className="promo-chain">{chain}</div>
-                      <div className="promo-title">\u05de\u05d1\u05e6\u05e2\u05d9 \u05d4\u05e9\u05d1\u05d5\u05e2</div>
-                      <div className="promo-discount">\u05dc\u05e4\u05e8\u05d8\u05d9\u05dd \u05e0\u05d5\u05e1\u05e4\u05d9\u05dd \u2192</div>
+                      <div className="promo-title">מבצעי השבוע</div>
+                      <div className="promo-discount">לפרטים נוספים →</div>
                     </div>
                   </div>
                 );
@@ -286,8 +286,8 @@ export default function Home({ coupons }) {
             <div className="pharm-section">
               <div className="section">
                 <div className="section-head">
-                  <div className="section-title"><span className="dot"></span>\ud83d\udc8a \u05e4\u05d0\u05e8\u05dd \u05d5\u05e7\u05d5\u05e1\u05de\u05d8\u05d9\u05e7\u05d4</div>
-                  <Link href="/pharm" className="see-all">\u05dc\u05db\u05dc \u05de\u05d1\u05e6\u05e2\u05d9 \u05d4\u05e4\u05d0\u05e8\u05dd \u2192</Link>
+                  <div className="section-title"><span className="dot"></span>💊 פארם וקוסמטיקה</div>
+                  <Link href="/pharm" className="see-all">לכל מבצעי הפארם →</Link>
                 </div>
                 <div className="scroll-container">
                   <div className="scroll-row" ref={pharmRef}>
@@ -306,10 +306,10 @@ export default function Home({ coupons }) {
           {/* AD BEFORE FOOTER */}
           <div className="ad-strip-wrap">
             <div className="ad-strip">
-              <div className="ad-label">\u05e4\u05e8\u05e1\u05d5\u05de\u05ea</div>
+              <div className="ad-label">פרסומת</div>
               <div className="ad-content">
-                <div className="ad-icon">\ud83c\udfaf</div>
-                <div className="ad-text"><b>Google Ads \u2014 728\u00d790</b> | Leaderboard Banner</div>
+                <div className="ad-icon">🎯</div>
+                <div className="ad-text"><b>Google Ads — 728×90</b> | Leaderboard Banner</div>
               </div>
             </div>
           </div>
@@ -321,30 +321,30 @@ export default function Home({ coupons }) {
         <div className="footer-inner">
           <div className="footer-top">
             <div className="footer-brand">
-              <div className="footer-logo">\u05e7\u05d5\u05e4\u05d5\u05df<span>+</span></div>
-              <p>\u05db\u05dc \u05d4\u05e7\u05d5\u05e4\u05d5\u05e0\u05d9\u05dd \u05d5\u05d4\u05de\u05d1\u05e6\u05e2\u05d9\u05dd \u05e9\u05dc \u05d4\u05e8\u05e9\u05ea\u05d5\u05ea \u05d4\u05d2\u05d3\u05d5\u05dc\u05d5\u05ea \u05d1\u05de\u05e7\u05d5\u05dd \u05d0\u05d7\u05d3. \u05de\u05ea\u05e2\u05d3\u05db\u05e0\u05d9\u05dd \u05de\u05d3\u05d9 \u05d9\u05d5\u05dd.</p>
+              <div className="footer-logo">קופון<span>+</span></div>
+              <p>כל הקופונים והמבצעים של הרשתות הגדולות במקום אחד. מתעדכנים מדי יום.</p>
             </div>
             <div className="footer-col">
-              <h5>\u05e7\u05d8\u05d2\u05d5\u05e8\u05d9\u05d5\u05ea</h5>
-              <a href="#">\ud83d\udecd\ufe0f \u05e1\u05d5\u05e4\u05e8\u05de\u05e8\u05e7\u05d8</a>
-              <a href="#">\ud83d\udc8a \u05e4\u05d0\u05e8\u05dd \u05d5\u05d1\u05e8\u05d9\u05d0\u05d5\u05ea</a>
-              <a href="#">\ud83d\udc84 \u05d8\u05d9\u05e4\u05d5\u05d7</a>
-              <a href="#">\ud83d\udcf1 \u05d0\u05dc\u05e7\u05d8\u05e8\u05d5\u05e0\u05d9\u05e7\u05d4</a>
-              <a href="#">\ud83d\udc3e \u05d7\u05d9\u05d5\u05ea \u05de\u05d7\u05de\u05d3</a>
+              <h5>קטגוריות</h5>
+              <a href="#">🛍️ סופרמרקט</a>
+              <a href="#">💊 פארם ובריאות</a>
+              <a href="#">💄 טיפוח</a>
+              <a href="#">📱 אלקטרוניקה</a>
+              <a href="#">🐾 חיות מחמד</a>
             </div>
             <div className="footer-col">
-              <h5>\u05d4\u05d0\u05ea\u05e8</h5>
-              <Link href="/contact">\u05e6\u05d5\u05e8 \u05e7\u05e9\u05e8</Link>
-              <Link href="/privacy">\u05de\u05d3\u05d9\u05e0\u05d9\u05d5\u05ea \u05e4\u05e8\u05d8\u05d9\u05d5\u05ea</Link>
-              <Link href="/terms">\u05ea\u05e0\u05d0\u05d9 \u05e9\u05d9\u05de\u05d5\u05e9</Link>
+              <h5>האתר</h5>
+              <Link href="/contact">צור קשר</Link>
+              <Link href="/privacy">מדיניות פרטיות</Link>
+              <Link href="/terms">תנאי שימוש</Link>
             </div>
           </div>
           <div className="footer-bottom">
-            <span>\u00a9 2025 \u05e7\u05d5\u05e4\u05d5\u05df+ \u2014 \u05db\u05dc \u05d4\u05d6\u05db\u05d5\u05d9\u05d5\u05ea \u05e9\u05de\u05d5\u05e8\u05d5\u05ea</span>
+            <span>© 2025 קופון+ — כל הזכויות שמורות</span>
             <div className="footer-links">
-              <Link href="/privacy">\u05e4\u05e8\u05d8\u05d9\u05d5\u05ea</Link>
-              <Link href="/terms">\u05ea\u05e0\u05d0\u05d9\u05dd</Link>
-              <Link href="/contact">\u05e6\u05d5\u05e8 \u05e7\u05e9\u05e8</Link>
+              <Link href="/privacy">פרטיות</Link>
+              <Link href="/terms">תנאים</Link>
+              <Link href="/contact">צור קשר</Link>
             </div>
           </div>
         </div>
