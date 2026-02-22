@@ -229,6 +229,24 @@ export default function CouponPage({ coupon, related }) {
         .footer-links { display: flex; gap: 20px; }
         .footer-links a { color: rgba(255,255,255,.6); transition: color .15s; }
         .footer-links a:hover { color: #fff; }
+
+        @media(max-width:768px){
+          .header-inner{padding:0 16px;gap:12px;height:60px}
+          .main-nav{display:none}
+          .logo{font-size:22px}
+          .breadcrumb{padding:10px 16px;font-size:12px;flex-wrap:wrap;gap:4px}
+          .page-wrap{padding:20px 16px}
+          .coupon-detail{grid-template-columns:1fr;gap:20px}
+          .detail-img{height:220px}
+          .detail-title{font-size:22px}
+          .code-display{flex-direction:column;gap:10px}
+          .code-text{font-size:18px}
+          .code-btn{width:100%;text-align:center;padding:14px}
+          .related-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+          .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+          .footer-links{justify-content:center}
+        }
+        @media(max-width:400px){.related-grid{grid-template-columns:1fr}}
       `}</style>
     </>
   );

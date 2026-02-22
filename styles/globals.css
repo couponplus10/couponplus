@@ -5,14 +5,103 @@ a { text-decoration: none; color: inherit; }
 button { font-family: 'Heebo', sans-serif; cursor: pointer; border: none; background: none; }
 
 :root {
-  --red:    #E8321A;
-  --red-dk: #C42810;
-  --red-lt: #FF5A3D;
-  --cream:  #FFF8F3;
-  --warm:   #FFF0E6;
-  --navy:   #1A1A2E;
-  --gray:   #F5F0EC;
-  --gray2:  #E8E0D8;
-  --muted:  #7A6E68;
-  --white:  #FFFFFF;
+  --red: #E8321A; --red-dk: #C42810; --red-lt: #FF5A3D;
+  --cream: #FFF8F3; --warm: #FFF0E6; --navy: #1A1A2E;
+  --gray: #F5F0EC; --gray2: #E8E0D8; --muted: #7A6E68; --white: #FFFFFF;
+}
+
+/* ══ MOBILE HEADER ══ */
+@media (max-width: 768px) {
+  .header-inner { padding: 0 16px; gap: 12px; height: 60px; }
+  .search-wrap { max-width: none; flex: 1; }
+  .main-nav { display: none; }
+  .logo { font-size: 22px; }
+}
+
+/* ══ MOBILE HERO ══ */
+@media (max-width: 768px) {
+  .hero { padding: 36px 16px 48px; }
+  .hero-inner { flex-direction: column; gap: 32px; }
+  .hero h1 { font-size: 32px; }
+  .hero-sub { font-size: 15px; }
+  .hero-stats { gap: 24px; }
+  .hstat strong { font-size: 24px; }
+  .hero-chains { min-width: unset; width: 100%; }
+  .hc-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ══ MOBILE CHIPS ══ */
+@media (max-width: 768px) {
+  .chips-section { padding: 16px 16px 0; }
+  .chip { padding: 7px 14px; font-size: 12.5px; }
+}
+
+/* ══ MOBILE SECTIONS ══ */
+@media (max-width: 768px) {
+  .section { padding: 28px 16px; }
+  .section-title { font-size: 18px; }
+}
+
+/* ══ MOBILE CARDS GRID ══ */
+@media (max-width: 768px) {
+  .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .coupon-card { width: 100%; }
+  .card-title { font-size: 13px; }
+  .btn-details { font-size: 12px; padding: 9px 8px; }
+  .btn-code { font-size: 11px; padding: 9px 10px; }
+}
+@media (max-width: 400px) {
+  .cards-grid { grid-template-columns: 1fr; }
+}
+
+/* ══ MOBILE SCROLL ROW ══ */
+@media (max-width: 768px) {
+  .coupon-card { width: 220px; }
+  .scroll-container { margin: 0 -16px; padding: 0 16px; }
+  .scroll-row { padding: 12px 16px; }
+  .arr-right { right: 0; }
+  .arr-left { left: 0; }
+}
+
+/* ══ MOBILE PROMO GRID ══ */
+@media (max-width: 768px) {
+  .promo-grid { grid-template-columns: 1fr; gap: 12px; }
+  .promo-card { height: 180px; }
+}
+@media (min-width: 480px) and (max-width: 768px) {
+  .promo-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ══ MOBILE FOOTER ══ */
+@media (max-width: 768px) {
+  .footer-top { grid-template-columns: 1fr; gap: 24px; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .footer-links { justify-content: center; }
+}
+
+/* ══ MOBILE COUPON DETAIL ══ */
+@media (max-width: 768px) {
+  .coupon-detail { grid-template-columns: 1fr; gap: 24px; }
+  .detail-img { height: 240px; }
+  .detail-title { font-size: 22px; }
+  .code-display { flex-direction: column; gap: 10px; }
+  .code-btn { width: 100%; text-align: center; padding: 14px; }
+}
+
+/* ══ MOBILE PAGE HERO ══ */
+@media (max-width: 768px) {
+  .page-hero { padding: 32px 16px; }
+  .page-hero h1 { font-size: 28px; }
+}
+
+/* ══ MOBILE CONTACT/CONTENT BOX ══ */
+@media (max-width: 768px) {
+  .contact-box, .content-box { padding: 28px 20px; border-radius: 16px; }
+  .page-wrap { margin: 24px auto; }
+}
+
+/* ══ MOBILE TOPBAR ══ */
+@media (max-width: 768px) {
+  .topbar { font-size: 11px; gap: 10px; padding: 7px 12px; }
+  .sep { display: none; }
 }

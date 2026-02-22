@@ -188,6 +188,27 @@ export default function CategoryPage({ coupons, category }) {
         .footer-links{display:flex;gap:20px}
         .footer-links a{color:rgba(255,255,255,.6)}
         .footer-links a:hover{color:#fff}
+
+        @media(max-width:768px){
+          .header-inner{padding:0 16px;gap:12px;height:60px}
+          .main-nav{display:none}
+          .logo{font-size:22px}
+          .search-wrap{max-width:none;flex:1}
+          .page-hero{padding:32px 16px}
+          .page-hero h1{font-size:26px}
+          .back-btn{font-size:12px;padding:7px 14px}
+          .section{padding:24px 16px}
+          .cards-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+          .coupon-card{width:100%}
+          .card-title{font-size:13px}
+          .btn-details{font-size:12px;padding:9px 6px}
+          .btn-code{font-size:11px;padding:9px 8px}
+          .chain-chips{gap:6px}
+          .cchip{font-size:12px;padding:5px 12px}
+          .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+          .footer-links{justify-content:center}
+        }
+        @media(max-width:400px){.cards-grid{grid-template-columns:1fr}}
       `}</style>
     </>
   );

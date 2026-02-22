@@ -492,6 +492,47 @@ export default function Home({ coupons }) {
         .footer-links { display: flex; gap: 20px; }
         .footer-links a { color: rgba(255,255,255,.6); transition: color .15s; }
         .footer-links a:hover { color: #fff; }
+
+        @media(max-width:768px){
+          .header-inner{padding:0 16px;gap:12px;height:60px}
+          .main-nav{display:none}
+          .logo{font-size:22px}
+          .search-wrap{max-width:none;flex:1}
+          .hero{padding:36px 16px 48px}
+          .hero-inner{flex-direction:column;gap:28px}
+          .hero h1{font-size:30px}
+          .hero-sub{font-size:14px;margin-bottom:24px}
+          .hero-stats{gap:20px}
+          .hstat strong{font-size:22px}
+          .hero-chains{width:100%;min-width:unset}
+          .hc-grid{grid-template-columns:repeat(3,1fr)}
+          .chips-section{padding:16px 16px 0}
+          .chip{padding:7px 12px;font-size:12px}
+          .chip-num{font-size:10px;padding:2px 6px}
+          .section{padding:24px 16px}
+          .section-title{font-size:18px}
+          .scroll-container{margin:0 -16px;padding:0}
+          .scroll-row{padding:12px 16px}
+          .coupon-card{width:210px}
+          .arr-right{right:2px}
+          .arr-left{left:2px}
+          .promo-grid{grid-template-columns:1fr;gap:12px}
+          .promo-card{height:160px}
+          .cards-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+          .card-title{font-size:13px}
+          .btn-details{font-size:12px;padding:9px 6px}
+          .btn-code{font-size:11px;padding:9px 8px}
+          .footer-top{grid-template-columns:1fr;gap:20px}
+          .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+          .footer-links{justify-content:center}
+          .topbar{font-size:11px;gap:8px;padding:6px 12px}
+          .sep{display:none}
+          .ad-strip-wrap{padding:0 16px}
+        }
+        @media(max-width:400px){
+          .cards-grid{grid-template-columns:1fr}
+          .hc-grid{grid-template-columns:repeat(2,1fr)}
+        }
       `}</style>
     </>
   );
