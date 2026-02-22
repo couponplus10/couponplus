@@ -57,9 +57,9 @@ export default function CouponCard({ coupon }) {
       <div className={`cc-card${expired ? ' cc-expired' : ''}`}>
         <div className="cc-img">
           {coupon.image
-            ? <img src={coupon.image} alt={coupon.name} />
-            : <div className="cc-emoji" style={{ background: chain.bg }}>{chain.emoji}</div>
-          }
+            ? <img src={coupon.image} alt={coupon.name} onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex'; }} />
+            : null}
+          <div className="cc-emoji" style={{ background: chain.bg, display: coupon.image ? 'none' : 'flex' }}>{chain.emoji}</div>
           <div className="cc-chain"><div className="cc-dot" style={{ background: chain.dot }} />{coupon.chain}</div>
           {expired
             ? <div className="cc-badge cc-exp">⏰ פג תוקף</div>
