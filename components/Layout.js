@@ -18,6 +18,19 @@ const FOOTER_CATS = [
   { href: '/international',               label: '🌍 בינלאומי' },
 ];
 
+const SUB_CATS = [
+  { href: '/deals',                       label: '🔥 כל המבצעים' },
+  { href: '/category/סופרמרקט',          label: '🛍️ סופרמרקט' },
+  { href: '/pharm',                       label: '💊 פארם' },
+  { href: '/category/טיפוח וקוסמטיקה',  label: '💄 טיפוח' },
+  { href: '/category/טואלטיקה',          label: '🧴 טואלטיקה' },
+  { href: '/category/אלקטרוניקה',        label: '📱 אלקטרוניקה' },
+  { href: '/category/בית ומטבח',         label: '🏠 בית ומטבח' },
+  { href: '/category/אופנה',             label: '👗 אופנה' },
+  { href: '/category/חיות מחמד',         label: '🐾 חיות מחמד' },
+  { href: '/international',              label: '🌍 בינלאומי' },
+];
+
 export default function Layout({ children }) {
   const router   = useRouter();
   const [open, setOpen] = useState(false);
@@ -78,6 +91,17 @@ export default function Layout({ children }) {
           </div>
         )}
       </header>
+
+      {/* ══ CATEGORY SUB-NAV ══ */}
+      <div className="subnav">
+        <div className="subnav-inner">
+          {SUB_CATS.map(c => (
+            <Link key={c.href} href={c.href} className={`subnav-item${router.pathname === c.href || (c.href !== '/' && router.pathname.startsWith(c.href)) ? ' active' : ''}`}>
+              {c.label}
+            </Link>
+          ))}
+        </div>
+      </div>
 
       {/* ══ MAIN ══ */}
       <main>{children}</main>
@@ -162,6 +186,14 @@ export default function Layout({ children }) {
         .mob-emoji { font-size: 18px; width: 24px; text-align: center; }
         .mob-divider { height: 1px; background: var(--gray2); margin: 8px 24px; }
         .mob-sec-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 4px 24px 8px; }
+
+        /* SUBNAV */
+        .subnav { background: #fff; border-bottom: 1px solid var(--gray2); }
+        .subnav-inner { max-width: 1280px; margin: 0 auto; padding: 0 20px; display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .subnav-inner::-webkit-scrollbar { display: none; }
+        .subnav-item { flex-shrink: 0; padding: 9px 12px; font-size: 12.5px; font-weight: 600; color: var(--muted); white-space: nowrap; border-bottom: 2px solid transparent; transition: all .18s; }
+        .subnav-item:hover { color: var(--navy); border-bottom-color: var(--gray2); }
+        .subnav-item.active { color: var(--red); border-bottom-color: var(--red); font-weight: 800; }
 
         /* FOOTER */
         footer { background: var(--navy); color: rgba(255,255,255,.75); padding: 48px 20px 28px; margin-top: 24px; }

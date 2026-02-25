@@ -92,16 +92,7 @@ export default function International({ coupons }) {
           <div className="empty-state">
             <div className="empty-icon">🌍</div>
             <h3>קופונים בינלאומיים יתווספו בקרוב</h3>
-            <p>הוסף קופונים בינלאומיים לגיליון Google Sheets שלך עם שם רשת כמו AliExpress, Shein, Amazon, Temu, eBay</p>
-            <div className="how-to">
-              <h4>איך להוסיף קופונים בינלאומיים?</h4>
-              <div className="steps">
-                <div className="step"><span className="step-num">1</span><span>פתח את גיליון הקופונים שלך</span></div>
-                <div className="step"><span className="step-num">2</span><span>בעמודת "רשת" כתוב: AliExpress / Shein / Amazon / Temu / eBay</span></div>
-                <div className="step"><span className="step-num">3</span><span>בעמודת "קטגוריה" כתוב: בינלאומי</span></div>
-                <div className="step"><span className="step-num">4</span><span>האתר יציג אותם כאן אוטומטית</span></div>
-              </div>
-            </div>
+            <p>אנחנו עובדים על זה — חזרו בקרוב!</p>
           </div>
         )}
       </div>
