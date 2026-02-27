@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import CouponCard from '../components/CouponCard';
-import { getCoupons } from '../lib/sheets';
+import { getCoupons, getAliCoupons } from '../lib/sheets';
 import { useState } from 'react';
 
 const INTL_SITES = [
@@ -135,12 +135,29 @@ export default function International({ coupons }) {
 }
 
 export async function getStaticProps() {
+  const intlSites = ['AliExpress','Shein','Amazon','eBay','Temu','ASOS','Zara','H&M','ASOS'];
+
+  // Manual coupons from Google Sheets
   const all = await getCoupons();
-  // Filter only international coupons (category === 'בינלאומי' OR chain is international site)
-  const intlSites = ['AliExpress','Shein','Amazon','eBay','Temu','ASOS','Zara','H&M'];
-  const coupons = all.filter(c =>
+  const manualCoupons = all.filter(c =>
     c.category === 'בינלאומי' ||
     intlSites.some(s => c.chain && c.chain.includes(s))
   );
+
+  // Automatic AliExpress coupons from API
+  // Note: requires ALIEXPRESS_APP_KEY + ALIEXPRESS_APP_SECRET in .env.local
+  let aliCoupons = [];
+  try {
+    aliCoupons = await getAliCoupons(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
+  } catch { aliCoupons = []; }
+
+  // Merge: AliExpress first, then manual, deduplicate by id
+  const seen = new Set();
+  const coupons = [...aliCoupons, ...manualCoupons].filter(c => {
+    if (seen.has(c.id)) return false;
+    seen.add(c.id);
+    return true;
+  });
+
   return { props: { coupons }, revalidate: 3600 };
 }

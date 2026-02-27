@@ -1,8 +1,9 @@
 import Head from 'next/head';
 import { useState } from 'react';
-import { getCoupons } from '../lib/sheets';
+import { getCoupons, getSlides } from '../lib/sheets';
 import Layout from '../components/Layout';
 import CouponCard from '../components/CouponCard';
+import HeroSlider from '../components/HeroSlider';
 
 const CATEGORIES = [
   { key: 'all',              label: '🛒 הכל' },
@@ -29,7 +30,7 @@ const SUPER_CHAINS = [
   { name: 'אושר עד',    emoji: '🌿', color: '#388E3C' },
 ];
 
-export default function Home({ coupons }) {
+export default function Home({ coupons, slides }) {
   const [search,       setSearch]       = useState('');
   const [activeCat,    setActiveCat]    = useState('all');
   const [activeSuper,  setActiveSuper]  = useState(null); // selected supermarket chain
@@ -150,6 +151,9 @@ export default function Home({ coupons }) {
           </div>
         )}
       </div>
+
+      {/* ══ HERO SLIDER ══ */}
+      <HeroSlider slides={slides} />
 
       {/* ══ AD ══ */}
       <div className="pg-ad-wrap">
@@ -306,6 +310,6 @@ export default function Home({ coupons }) {
 }
 
 export async function getStaticProps() {
-  const coupons = await getCoupons();
-  return { props: { coupons }, revalidate: 3600 };
+  const [coupons, slides] = await Promise.all([getCoupons(), getSlides()]);
+  return { props: { coupons, slides }, revalidate: 3600 };
 }

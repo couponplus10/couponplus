@@ -75,29 +75,64 @@ export default function CouponPage({ coupon, related }) {
               {coupon.category && <div className="meta-item">🏷️ {coupon.category}</div>}
             </div>
 
-            {coupon.code && (
-              <div className={`code-box${expired ? ' code-expired' : ''}`}>
-                <div className="code-label">קוד קופון</div>
-                <div className="code-row">
-                  <span className="code-text">{revealed ? coupon.code : coupon.code.slice(0,3) + '•••'}</span>
-                  {!expired && (
-                    <button className={`code-btn${revealed ? ' rev' : ''}${copied ? ' cop' : ''}`} onClick={handleCode}>
-                      {copied ? '✅ הועתק!' : revealed ? 'העתק קוד' : 'הצג קוד'}
-                    </button>
-                  )}
-                </div>
-                {expired && <div className="code-exp-note">הקופון פג תוקף ואינו ניתן לשימוש</div>}
-              </div>
-            )}
+            {/* ── ACTION AREA — adapts to coupon type ── */}
+            {!expired ? (
+              <div className="action-area">
+                {/* URL button — קישור להטבה or קוד + קישור */}
+                {coupon.url && coupon.type !== 'קוד קופון' && (
+                  <a href={coupon.url} target="_blank" rel="noopener noreferrer" className="action-url">
+                    🔗 לקבלת ההטבה
+                  </a>
+                )}
 
-            {coupon.pdf && !expired && (
-              <div className="pdf-box">
-                <div>📄</div>
-                <div>
-                  <div className="pdf-title">חוברת מבצעים מלאה</div>
-                  <div className="pdf-sub">{coupon.chain}</div>
-                </div>
-                <a href={coupon.pdf} target="_blank" rel="noreferrer" className="pdf-btn">פתח PDF</a>
+                {/* Code box — קוד קופון or קוד + קישור */}
+                {coupon.code && coupon.type !== 'קישור להטבה' && (
+                  <div className="code-box">
+                    <div className="code-label">קוד קופון</div>
+                    <div className="code-row">
+                      <span className="code-text">{revealed ? coupon.code : coupon.code.slice(0,3) + '•••'}</span>
+                      <button className={`code-btn${revealed ? ' rev' : ''}${copied ? ' cop' : ''}`} onClick={handleCode}>
+                        {copied ? '✅ הועתק!' : revealed ? 'העתק קוד' : 'הצג קוד'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Fallback: no type set but has code */}
+                {coupon.code && !coupon.type && (
+                  <div className="code-box">
+                    <div className="code-label">קוד קופון</div>
+                    <div className="code-row">
+                      <span className="code-text">{revealed ? coupon.code : coupon.code.slice(0,3) + '•••'}</span>
+                      <button className={`code-btn${revealed ? ' rev' : ''}${copied ? ' cop' : ''}`} onClick={handleCode}>
+                        {copied ? '✅ הועתק!' : revealed ? 'העתק קוד' : 'הצג קוד'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Fallback: no type but has url */}
+                {coupon.url && !coupon.type && !coupon.code && (
+                  <a href={coupon.url} target="_blank" rel="noopener noreferrer" className="action-url">
+                    🔗 לקבלת ההטבה
+                  </a>
+                )}
+
+                {/* PDF */}
+                {coupon.pdf && (
+                  <div className="pdf-box">
+                    <div>📄</div>
+                    <div>
+                      <div className="pdf-title">חוברת מבצעים מלאה</div>
+                      <div className="pdf-sub">{coupon.chain}</div>
+                    </div>
+                    <a href={coupon.pdf} target="_blank" rel="noreferrer" className="pdf-btn">פתח PDF</a>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="code-box code-expired">
+                <div className="code-exp-note">⏰ הקופון פג תוקף ואינו ניתן לשימוש</div>
               </div>
             )}
           </div>
@@ -144,6 +179,9 @@ export default function CouponPage({ coupon, related }) {
         .meta{display:flex;flex-direction:column;gap:8px}
         .meta-item{font-size:14px;color:#7A6E68}
         .meta-expired{color:#E53935;font-weight:700}
+        .action-area{display:flex;flex-direction:column;gap:14px}
+        .action-url{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff;border-radius:14px;padding:16px 24px;font-size:16px;font-weight:800;text-decoration:none;transition:all .2s;font-family:'Heebo',sans-serif;box-shadow:0 4px 16px rgba(21,101,192,.3)}
+        .action-url:hover{background:linear-gradient(135deg,#0D47A1,#1565C0);transform:translateY(-2px);box-shadow:0 8px 24px rgba(21,101,192,.4)}
         .code-box{background:#F5F0EC;border-radius:16px;padding:20px}
         .code-expired{background:#EEEEEE;opacity:.7}
         .code-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7A6E68;margin-bottom:12px}
